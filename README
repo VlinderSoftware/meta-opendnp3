@@ -1,0 +1,63 @@
+This README file contains information on the contents of the
+meta-opendnp3 layer.
+
+Please see the corresponding sections below for details.
+
+
+Dependencies
+============
+
+This layer depends on:
+
+  URI: git://git.openembedded.org/bitbake
+  branch: master
+
+  URI: git://git.openembedded.org/openembedded-core
+  layers: meta
+  branch: master
+
+
+Patches
+=======
+
+Please submit any patches against the meta-opendnp3 layer to the
+support@vlinder.ca
+
+
+Table of Contents
+=================
+
+  I. Adding the meta-opendnp3 layer to your build
+ II. Misc
+
+
+I. Adding the meta-opendnp3 layer to your build
+=================================================
+
+In order to use this layer, you need to make the build system aware of
+it.
+
+Assuming the meta-opendnp3 layer exists at the top-level of your
+yocto build tree, you can add it to the build system by adding the
+location of the meta-opendnp3 layer to bblayers.conf, along with any
+other layers needed. e.g.:
+
+  BBLAYERS ?= " \
+    /path/to/yocto/meta \
+    /path/to/yocto/meta-poky \
+    /path/to/yocto/meta-yocto-bsp \
+    /path/to/yocto/meta-meta-opendnp3 \
+    "
+
+
+II. Misc
+========
+
+Changes made to OpenDNP3 are aimed at getting it to compile in our
+environment, which is mostly vanilla Yocto. Branches in the repo are named for
+the equivalent branches in the Yocto poky repo and should compile out of the
+box. For the master branch YMMV.
+
+OpenDNP3 is maintained by Automatak, LLC. Vlinder Software assumes no
+responsibility for it, or for anything that might arise from its use.
+

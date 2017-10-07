@@ -1,0 +1,75 @@
+diff -bwupr dnp3-2.2.0/cmake/inc/posix.cmake ../../../build-qemu/workspace/sources/opendnp3/cmake/inc/posix.cmake
+--- dnp3-2.2.0/cmake/inc/posix.cmake	2017-06-22 15:18:13.000000000 -0400
++++ ../../../build-qemu/workspace/sources/opendnp3/cmake/inc/posix.cmake	2017-10-07 10:33:08.188200531 -0400
+@@ -7,16 +7,22 @@ if (UNIX)
+ 		set(LIB_TYPE SHARED)
+ 	endif()
+ 	
+-	set(CMAKE_C_FLAGS "-Wall -Wno-multichar -Wunused-variable -Wno-unused-parameter -Wunused-function -Wunused -Wno-system-headers -Wwrite-strings -save-temps")
++	set(CMAKE_CXX_STANDARD 14)
++	set(CMAKE_CXX_STANDARD_REQUIRED ON)
++	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-multichar -Wunused-variable -Wno-unused-parameter -Wunused-function -Wunused -Wno-system-headers -Wwrite-strings")
++	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-multichar -Wunused-variable -Wno-unused-parameter -Wunused-function -Wunused -Wno-system-headers -Wwrite-strings")
+ 
+ 	if (${CYGWIN})
+ 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
++		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ 	elseif(${MINGW})
+ 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
++		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ 	else()
+ 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
++		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+ 	endif()
+-	set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated -Wno-parentheses -std=c++14")
++	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated -Wno-parentheses -std=c++14")
+  
+ 	set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
+ 	set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
+Only in ../../../build-qemu/workspace/sources/opendnp3/cmake/inc: posix.cmake~
+Only in ../../../build-qemu/workspace/sources/opendnp3/cmake/inc: .posix.cmake.un~
+diff -bwupr dnp3-2.2.0/cpp/libs/include/asiopal/Executor.h ../../../build-qemu/workspace/sources/opendnp3/cpp/libs/include/asiopal/Executor.h
+--- dnp3-2.2.0/cpp/libs/include/asiopal/Executor.h	2017-06-22 15:18:13.000000000 -0400
++++ ../../../build-qemu/workspace/sources/opendnp3/cpp/libs/include/asiopal/Executor.h	2017-10-07 11:03:10.677719302 -0400
+@@ -27,7 +27,9 @@
+ #include "asiopal/IO.h"
+ #include "asiopal/SteadyClock.h"
+ 
+-#include <future>
++#define BOOST_THREAD_PROVIDES_FUTURE
++#include <boost/thread.hpp>
++#include <boost/thread/future.hpp>
+ 
+ namespace asiopal
+ {
+@@ -97,7 +99,7 @@ T Executor::ReturnFrom(const std::functi
+ 		return action();
+ 	}
+ 
+-	std::promise<T> ready;
++	boost::promise<T> ready;
+ 
+ 	auto future = ready.get_future();
+ 
+diff -bwupr dnp3-2.2.0/cpp/libs/src/asiopal/Executor.cpp ../../../build-qemu/workspace/sources/opendnp3/cpp/libs/src/asiopal/Executor.cpp
+--- dnp3-2.2.0/cpp/libs/src/asiopal/Executor.cpp	2017-06-22 15:18:13.000000000 -0400
++++ ../../../build-qemu/workspace/sources/opendnp3/cpp/libs/src/asiopal/Executor.cpp	2017-10-07 10:58:57.875860599 -0400
+@@ -25,6 +25,9 @@
+ #include "asiopal/TimeConversions.h"
+ 
+ #include <chrono>
++#define BOOST_THREAD_PROVIDES_FUTURE
++#include <boost/thread.hpp>
++#include <boost/thread/future.hpp>
+ 
+ using namespace openpal;
+ 
+@@ -94,7 +97,7 @@ void Executor::BlockUntil(const std::fun
+ 		return;
+ 	}
+ 
+-	std::promise<bool> ready;
++	boost::promise<bool> ready;
+ 
+ 	auto future = ready.get_future();
+ 
